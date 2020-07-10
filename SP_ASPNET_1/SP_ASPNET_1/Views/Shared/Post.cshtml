@@ -1,0 +1,57 @@
+﻿@model SP_ASPNET_1.Models.BlogPost
+@using Microsoft.AspNet.Identity;
+@{
+    ViewBag.Title = "Post";
+}
+<div class="card mb-3" style="max-width: 540px;" id="likes-number">
+    <div class="row no-gutters">
+        <div class="col-md-4">
+            <img src="@Html.AttributeEncode( Model.ImageUrl)" class="card-img" alt="post image preview">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h5 class="card-title">@Model.Title</h5>
+                <p class="card-text">@Model.Content.Substring(0, 200)...</p>
+                <button onClick="location.href='@Url.Action("SinglePost", new { id = Model.BlogPostID})'" class="btn btn-primary">read more</button>
+              
+
+                <p class="card-text"><small class="text-muted">By @Model.User on @Model.DateTime.ToString()</small></p>
+
+            </div>
+
+        </div>
+    </div>
+    @using (Ajax.BeginForm("AddComment", "BlogPost", new { userId = Model.FK_UserId, postId = Model.BlogPostID },
+          new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "likes-number", InsertionMode = InsertionMode.Replace }))
+
+    {<div class="input-group mb-3">
+
+            <input type="text" class="form-control" name="content" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
+            <div class="input-group-append">
+
+                <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Comment</button>
+            </div>
+
+        </div>}
+    <div class="list-group">
+        @if (Model.Comments != null)
+        {
+            foreach (var item in Model.Comments)
+            {
+                <a href="#" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+
+                        @* <small>@item.User.ToString() - 3 days ago</small>*@
+                    </div>
+                    <p class="mb-1">@item.Content</p>
+
+                </a>
+            }
+        }
+
+
+
+
+    </div>
+</div>
+
